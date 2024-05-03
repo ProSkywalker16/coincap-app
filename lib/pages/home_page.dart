@@ -1,7 +1,8 @@
+import 'dart:convert';
+
 import 'package:coincap/services/http_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-
 
 class HomePage extends StatefulWidget {
   @override
@@ -33,6 +34,7 @@ class _HomePageState extends State<HomePage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               _selectedCoinDropdown(),
+              _dataWidgets(),
             ],
           ),
         ),
@@ -48,9 +50,7 @@ class _HomePageState extends State<HomePage> {
             value: e,
             child: Text(
               e,
-              style: 
-                
-              const TextStyle(
+              style: const TextStyle(
                 color: Colors.white,
                 fontSize: 40,
                 fontWeight: FontWeight.w400,
@@ -70,6 +70,45 @@ class _HomePageState extends State<HomePage> {
         color: Colors.blueGrey,
       ),
       underline: Container(),
+    );
+  }
+
+  Widget _dataWidgets() {
+    return FutureBuilder(
+      future: _http!.get("/coins/bitcoin"),
+      builder: (BuildContext _context, AsyncSnapshot _snapshot) {
+        if (_snapshot.hasData) {
+          Map _data = jsonDecode(
+            _snapshot.data.toString(),
+          );
+          num _usdPrice = _data["market_data"]["current_price"]["usd"];
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              _currentPriceWidget(_usdPrice),
+            ],
+          );
+        } else {
+          return const Center(
+            child: CircularProgressIndicator(
+              color: Colors.white,
+            ),
+          );
+        }
+      },
+    );
+  }
+
+  Widget _currentPriceWidget(num _rate) {
+    return Text(
+      "${_rate.toStringAsFixed(2)} USD",
+      style: const TextStyle(
+        color: Colors.white,
+        fontSize: 20,
+        fontWeight: FontWeight.w400,
+      ),
     );
   }
 }

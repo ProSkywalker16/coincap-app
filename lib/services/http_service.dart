@@ -1,4 +1,3 @@
-
 import 'package:dio/dio.dart';
 import '../models/app_config.dart';
 import 'package:get_it/get_it.dart';
@@ -17,10 +16,8 @@ class HTTPService {
   Future<Response?> get(String _path) async {
     try {
       String _url = "$_base_url$_path";
-      
-      print(_url);
       Response _response = await dio.get(_url);
-      
+      return _response;
     } catch (e) {
       print('HTTPService: Unable to perform get request.');
       print(e);
