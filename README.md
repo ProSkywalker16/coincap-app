@@ -25,10 +25,11 @@ Then, open `index.html` in your preferred web browser.
 
 ## Usage
 
-1. Upon opening the app, you'll see a list of popular cryptocurrencies along with their current prices.
-2. Use the search bar to find specific cryptocurrencies.
-3. Click on a cryptocurrency to view detailed market data and trends.
-4. Customize your view by selecting your preferred fiat currency.
+1. Upon opening the app, you'll see a list of popular cryptocurrencies along with their current prices from the Dropdown menu
+2. Use the Dropdown menu to find specific cryptocurrencies.
+3. Double click the cryptocurrency icon to fetch exchange rates with commonly known currencies according to your preferences.
+4. There may be some loading issues, please refresh by clicking on different cryptos or by restarting the app.
+5. The .apk file can be found in the build folder, please navigate to 'releases' and download it.
 
 ## Technologies Used
 
