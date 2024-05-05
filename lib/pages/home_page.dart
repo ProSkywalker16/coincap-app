@@ -31,8 +31,8 @@ class _HomePageState extends State<HomePage> {
         child: SingleChildScrollView(
           child: Center(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 _selectedCoinDropdown(),
@@ -52,6 +52,9 @@ class _HomePageState extends State<HomePage> {
       "tether",
       "solana",
       "dogecoin",
+      "binancecoin",
+      "indian-shiba-inu",
+      
       
     ];
     List<DropdownMenuItem<String>> _items = _coins
@@ -210,8 +213,8 @@ class _HomePageState extends State<HomePage> {
       "${_rate.toStringAsFixed(2)} USD",
       style: const TextStyle(
         color: Colors.white,
-        fontSize: 20,
-        fontWeight: FontWeight.w400,
+        fontSize: 22,
+        fontWeight: FontWeight.w500,
       ),
     );
   }
@@ -221,7 +224,7 @@ class _HomePageState extends State<HomePage> {
       "${_change.toString()}%",
       style: const TextStyle(
         color: Colors.white,
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: FontWeight.w300,
       ),
     );
@@ -246,7 +249,7 @@ class _HomePageState extends State<HomePage> {
 
 
 
-  /*
+  
   Widget _descriptionCardWidget(String _description) {
   return Expanded(
     child: Container(
@@ -269,16 +272,16 @@ class _HomePageState extends State<HomePage> {
           style: const TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.w500,
-            fontSize: 15,
+            fontSize: 18,
           ),
         ),
       ),
     ),
   );
 }
-*/
 
-  
+
+  /*
   Widget _descriptionCardWidget(String _description) {
     return Container(
       height: _deviceHeight! * 0.62,
@@ -304,6 +307,7 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+  */
 
 
   
