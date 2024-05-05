@@ -142,7 +142,7 @@ class _HomePageState extends State<HomePage> {
             _percentageChangeWidget(_change24h),
             SingleChildScrollView(
               child: _descriptionCardWidget(
-                _data["description"]["en"],
+                _data["description"]["en"].replaceAll(RegExp(r'<[^>]+>'),''),
               ),
             ),
           ],
