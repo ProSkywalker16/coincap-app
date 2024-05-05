@@ -249,7 +249,7 @@ class _HomePageState extends State<HomePage> {
 
 
 
-  
+  /*
   Widget _descriptionCardWidget(String _description) {
   return Expanded(
     child: Container(
@@ -279,9 +279,10 @@ class _HomePageState extends State<HomePage> {
     ),
   );
 }
+*/
 
 
-  /*
+  
   Widget _descriptionCardWidget(String _description) {
     return Container(
       height: _deviceHeight! * 0.62,
@@ -307,7 +308,7 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-  */
+  
 
 
   
