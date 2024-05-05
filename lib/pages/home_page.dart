@@ -245,6 +245,33 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Widget _descriptionCardWidget(String _description) {
+  return Container(
+    height: _deviceHeight! * 0.62,
+    width: _deviceWidth! * 0.90,
+    margin: EdgeInsets.symmetric(
+      vertical: _deviceHeight! * 0.018,
+    ),
+    padding: EdgeInsets.symmetric(
+      vertical: _deviceHeight! * 0.01,
+      horizontal: _deviceWidth! * 0.02,
+    ),
+    decoration: BoxDecoration(
+      borderRadius: BorderRadius.circular(20),
+      color: Color.fromRGBO(152, 88, 230, 0.475),
+    ),
+    child: SingleChildScrollView(
+      child: Text(
+        _description,
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.w500,
+          fontSize: 18,
+        ),
+      ),
+    ),
+  );
+}
 
 
 
@@ -283,7 +310,7 @@ class _HomePageState extends State<HomePage> {
 
 
   
-  Widget _descriptionCardWidget(String _description) {
+  /*Widget _descriptionCardWidget(String _description) {
     return Container(
       height: _deviceHeight! * 0.62,
       width: _deviceWidth! * 0.90,
@@ -308,6 +335,7 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+  */
   
 
 
