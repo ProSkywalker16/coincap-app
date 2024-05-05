@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:coincap/pages/details_page.dart';
 import 'package:coincap/services/http_service.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
@@ -14,7 +15,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   double? _deviceHeight, _deviceWidth;
   HTTPService? _http;
-
+  String? _selectedCoin = "bitcoin";
   @override
   void initState() {
     super.initState();
@@ -27,15 +28,17 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       body: SafeArea(
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              _selectedCoinDropdown(),
-              _dataWidgets(),
-            ],
+        child: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                _selectedCoinDropdown(),
+                _dataWidgets(),
+              ],
+            ),
           ),
         ),
       ),
@@ -43,7 +46,14 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget _selectedCoinDropdown() {
-    List<String> _coins = ["bitcoin", "ethereum", "tether"];
+    List<String> _coins = [
+      "bitcoin",
+      "ethereum",
+      "tether",
+      "solana",
+      "dogecoin",
+      
+    ];
     List<DropdownMenuItem<String>> _items = _coins
         .map(
           (e) => DropdownMenuItem(
@@ -51,43 +61,137 @@ class _HomePageState extends State<HomePage> {
             child: Text(
               e,
               style: const TextStyle(
-                color: Colors.white,
-                fontSize: 40,
+                color: Color.fromARGB(255, 255, 255, 255),
+                fontSize: 35,
                 fontWeight: FontWeight.w400,
               ),
             ),
           ),
         )
         .toList();
-    return DropdownButton(
-      value: _coins.first,
-      items: _items,
-      onChanged: (_value) {},
-      dropdownColor: Color.fromARGB(255, 88, 93, 233),
+    return Container(
+      padding: EdgeInsets.all(10.0), // Add padding if needed
+      decoration: BoxDecoration(
+        // Add decoration if needed
+        // For example, if you want to add a border:
+        // border: Border.all(color: Colors.grey, width: 1.0),
+        border: Border.all(color: Colors.grey, width: 3.0),
+        borderRadius: BorderRadius.circular(20), // Add border radius if needed
+      ),
+      child: DropdownButton(
+        value: _selectedCoin,
+        items: _items,
+        onChanged: (dynamic _value) {
+          setState(
+            () {
+              _selectedCoin = _value;
+            },
+          );
+        },
+        dropdownColor: Color.fromARGB(255, 92, 97, 237),
       iconSize: 30,
       icon: const Icon(
         Icons.arrow_drop_down_sharp,
-        color: Colors.blueGrey,
+        color: Color.fromARGB(255, 152, 204, 230),
       ),
       underline: Container(),
+      ),
     );
   }
+  
+
+
+
 
   Widget _dataWidgets() {
+  return FutureBuilder(
+    future: _http!.get("/coins/$_selectedCoin"),
+    builder: (BuildContext _context, AsyncSnapshot _snapshot) {
+      if (_snapshot.hasData) {
+        Map _data = jsonDecode(
+          _snapshot.data.toString(),
+        );
+        num _usdPrice = _data["market_data"]["current_price"]["usd"];
+        num _change24h = _data["market_data"]["price_change_percentage_24h"];
+        Map _exchangeRates = _data["market_data"]["current_price"];
+
+        return Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            GestureDetector(
+              onDoubleTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (BuildContext _context) {
+                      return DetailsPage(rates:_exchangeRates);
+                    },
+                  ),
+                );
+              },
+              child: _coinImageWidget(
+                _data["image"]["large"],
+              ),
+            ),
+            _currentPriceWidget(_usdPrice),
+            _percentageChangeWidget(_change24h),
+            SingleChildScrollView(
+              child: _descriptionCardWidget(
+                _data["description"]["en"],
+              ),
+            ),
+          ],
+        );
+      } else {
+        return const Center(
+          child: CircularProgressIndicator(
+            color: Colors.white,
+          ),
+        );
+      }
+    },
+  );
+}
+  /*
+  Widget _dataWidgets() {
     return FutureBuilder(
-      future: _http!.get("/coins/bitcoin"),
+      future: _http!.get("/coins/$_selectedCoin"),
       builder: (BuildContext _context, AsyncSnapshot _snapshot) {
         if (_snapshot.hasData) {
           Map _data = jsonDecode(
             _snapshot.data.toString(),
           );
           num _usdPrice = _data["market_data"]["current_price"]["usd"];
+          num _change24h = _data["market_data"]["price_change_percentage_24h"];
+          Map _exchangeRates = _data["market_data"]["current_price"];
+          
           return Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              GestureDetector(
+                onDoubleTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (BuildContext _context) {
+                        return DetailsPage(rates:_exchangeRates);
+                      },
+                    ),
+                  );
+                },
+                child: _coinImageWidget(
+                  _data["image"]["large"],
+                ),
+              ),
               _currentPriceWidget(_usdPrice),
+              _percentageChangeWidget(_change24h),
+              _descriptionCardWidget(
+                _data["description"]["en"],
+              ),
             ],
           );
         } else {
@@ -100,7 +204,7 @@ class _HomePageState extends State<HomePage> {
       },
     );
   }
-
+ */
   Widget _currentPriceWidget(num _rate) {
     return Text(
       "${_rate.toStringAsFixed(2)} USD",
@@ -111,4 +215,96 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
+  Widget _percentageChangeWidget(num _change) {
+    return Text(
+      "${_change.toString()}%",
+      style: const TextStyle(
+        color: Colors.white,
+        fontSize: 18,
+        fontWeight: FontWeight.w300,
+      ),
+    );
+  }
+
+  Widget _coinImageWidget(String _imgURL) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+        vertical: _deviceHeight! * 0.03,
+      ),
+      height: _deviceHeight! * 0.14,
+      width: _deviceWidth! * 0.15,
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: NetworkImage(_imgURL),
+        ),
+      ),
+    );
+  }
+
+
+
+
+
+  /*
+  Widget _descriptionCardWidget(String _description) {
+  return Expanded(
+    child: Container(
+      height: _deviceHeight! * 0.61,
+      width: _deviceWidth! * 0.89,
+      margin: EdgeInsets.symmetric(
+        vertical: _deviceHeight! * 0.01,
+      ),
+      padding: EdgeInsets.symmetric(
+        vertical: _deviceHeight! * 0.01,
+        horizontal: _deviceHeight! * 0.02,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: Color.fromRGBO(152, 88, 230, 0.475),
+      ),
+      child: SingleChildScrollView(
+        child: Text(
+          _description,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w500,
+            fontSize: 15,
+          ),
+        ),
+      ),
+    ),
+  );
+}
+*/
+
+  
+  Widget _descriptionCardWidget(String _description) {
+    return Container(
+      height: _deviceHeight! * 0.62,
+      width: _deviceWidth! * 0.90,
+      margin: EdgeInsets.symmetric(
+        vertical: _deviceHeight! * 0.018,
+      ),
+      padding: EdgeInsets.symmetric(
+        vertical: _deviceHeight! * 0.01,
+        horizontal: _deviceHeight! * 0.01,
+      ),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        color: Color.fromRGBO(152, 88, 230, 0.475),
+      ),
+      child: Text(
+        _description,
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.w500,
+          fontSize: 15,
+        ),
+      ),
+    );
+  }
+
+
+  
 }
