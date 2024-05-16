@@ -53,7 +53,7 @@ class _HomePageState extends State<HomePage> {
       "solana",
       "dogecoin",
       "binancecoin",
-      "indian-shiba-inu",
+      "coolcoin",
       
       
     ];
